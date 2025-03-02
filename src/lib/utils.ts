@@ -1,16 +1,21 @@
-import { toast } from '@/components/ui/use-toast'
+
 import { EntityError } from '@/lib/http'
 import { type ClassValue, clsx } from 'clsx'
-import { UseFormSetError } from 'react-hook-form'
 import { twMerge } from 'tailwind-merge'
 import jwt from 'jsonwebtoken'
 import { DishStatus, TableStatus } from '@/constants/type'
 import envConfig from '@/config'
+import { UseFormSetError } from 'react-hook-form'
+import { addToast } from '@heroui/react'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
+
+/**
+ * Xóa đi ký tự `/` đầu tiên của path
+ */
 export const handleErrorApi = ({
     error,
     setError,
@@ -28,17 +33,13 @@ export const handleErrorApi = ({
             })
         })
     } else {
-        toast({
+        addToast({
             title: 'Lỗi',
             description: error?.payload?.message ?? 'Lỗi không xác định',
-            variant: 'destructive',
-            duration: duration ?? 5000
+            timeout: duration ?? 5000
         })
     }
 }
-/**
- * Xóa đi ký tự `/` đầu tiên của path
- */
 export const normalizePath = (path: string) => {
     return path.startsWith('/') ? path.slice(1) : path
 }
@@ -73,6 +74,4 @@ export const getVietnameseTableStatus = (status: (typeof TableStatus)[keyof type
     }
 }
 
-export const getTableLink = ({ token, tableNumber }: { token: string; tableNumber: number }) => {
-    return envConfig.NEXT_PUBLIC_URL + '/tables/' + tableNumber + '?token=' + token
-}
+
